@@ -4,17 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dating-app</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <h1>Velkommen til din datingapp</h1>
     <!--- knapper til dating-siden -->
-    <button id="women-btn">Women</button>
-    <button id="men-btn">Men</button>
-    <button id="both-btn">Men & Women</button>
-    
+    <div class="content-container">
+      <button id="women-btn" class="btn">Women</button>
+      <button id="men-btn" class="btn">Men</button>
+      <button id="both-btn" class="btn">Men & Women</button>
+
+</div>
     <script>
-        const womenBtn = document.getElementById("women-btn");
-        const menBtn = document.getElementById("men-btn");
-        const bothBtn = document.getElementById("both-btn");
+      const womenBtn = document.getElementById("women-btn");
+      const menBtn = document.getElementById("men-btn");
+      const bothBtn = document.getElementById("both-btn");
 
       // fetching, try & catch:
       async function fetchRandomUser() {
