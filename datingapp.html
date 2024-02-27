@@ -10,26 +10,38 @@
     <h1>Velkommen til din datingapp</h1>
     <!--- knapper til dating-siden -->
     <div class="content-container">
-      <button id="women-btn" class="btn">Women</button>
-      <button id="men-btn" class="btn">Men</button>
-      <button id="both-btn" class="btn">Men & Women</button>
+    <button id="women-btn" class="btn">Women</button>
+    <button id="men-btn" class="btn">Men</button>
+    <button id="both-btn" class="btn">Men & Women</button>
     </div>
+
+    <!-- container & counter -->
+    <div id="profile-container"></div>
+    <div id="swipe-score-container"></div>
+
     <script>
+      // knapper, containers & counters js:
       const womenBtn = document.getElementById("women-btn");
       const menBtn = document.getElementById("men-btn");
       const bothBtn = document.getElementById("both-btn");
+
+      const profileContainer = document.getElementById("profile-container");
+      let swipeScoreContainer = document.getElementById(
+        "swipe-score-container"
+      );
+      let swipeCounter = 10;
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere
       async function fetchRandomUser() {
         const randomUserRequest = await fetch(
-          "https://randomuser.me/api/?results=10"
+          "https://randomuser.me/api/?results=30"
         );
         let result = await randomUserRequest.json();
 
         return result;
       }
-      console.log(fetchRandomUser());
+      console.log("inne i fetchandomUser", fetchRandomUser());
 
       // hjelpefunksjon som henter inn randomUsers og viser de frem.
       async function fetchAndShowUsers() {
@@ -43,6 +55,8 @@
         }
       }
       fetchAndShowUsers();
+
+   
     </script>
   </body>
 </html>
