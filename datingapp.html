@@ -10,11 +10,18 @@
     <button id="women-btn">Women</button>
     <button id="men-btn">Men</button>
     <button id="both-btn">Men & Women</button>
-    
+
+    <!-- containers -->
+    <div id="user-picture-container"></div>
+    <p id="swipe-counter">Antall swipes: 10</p>
+
     <script>
-        const womenBtn = document.getElementById("women-btn");
-        const menBtn = document.getElementById("men-btn");
-        const bothBtn = document.getElementById("both-btn");
+      const womenBtn = document.getElementById("women-btn");
+      const menBtn = document.getElementById("men-btn");
+      const bothBtn = document.getElementById("both-btn");
+
+      const userPictureContainer = document.getElementById("user-picture-container");
+      let swipeCounter = document.getElementById("swipe-counter");
 
       // fetching, try & catch:
       async function fetchRandomUser() {
@@ -30,6 +37,17 @@
         }
       }
       fetchRandomUser();
+
+      function updateSwipeCounter(){
+        swipeCount--;
+        swipeCounter.innerText = `antall swipes: ${swipeCount}`;
+        console.log(updateSwipeCounter())
+      }
+
+      // 1: På nettsiden skal det vises en score over brukerens antall swipes/likerklikk. Brukeren starter med å ha 10 swipes/likerklikk, og det vil bli trukket -1 for hver gang brukeren swiper/velger "ja/nei". Skal også ha tre knapper: en for filtrering av kvinner, en for filtrering av menn og en for "begge". Bruker kan trykke på disse knappene for å få vist  frem de ulike kjønnene.
+      // det skal vises ett kort om gangen men informasjon om en tilfeldig profil på nettsiden som passer filterkriteriene til brukeren. følgene info skal vises: bilde, navn, bosted. Kortene skal få egen styling avgengig om det er mann el dame på kortet.
+
+      // funksjonalitet: når bruker går inn på nettsiden og det dukker opp et kort kan brukeren "swipe" på profilen ved å trykke på tastaturet sitt. Hvis brukeren trykker på piltasten til høyre (->) er bruker interessert. til venstre: ikke interessert. Hvis bruker ikke er interessert byttes kortet ut med en ny profil som fortsatt samsvarer med kjønnsfiltreringen.
     </script>
   </body>
 </html>
