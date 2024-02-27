@@ -6,7 +6,35 @@
     <title>Hundepasser-app</title>
 </head>
 <body>
+<script>
+       // fetching, try & catch:
+       async function fetchRandomUser() {
+        try {
+          const response = await fetch("https://randomuser.me/api");
+          const randomUser = await response.json();
+          console.log(randomUser);
+        } catch (error) {
+          console.log(
+            "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
+            error
+          );
+        }
+      }
+      fetchRandomUser();
 
-    </script>
+      async function fetchRandomDog() {
+        try {
+            const response = await fetch("https://dog.ceo/api/breeds/list/all");
+            const randomDog = await response.json();
+            console.log(randomDog);
+        } catch (error) {
+            console.log("Error, noe er feil. Kom tilbake senere", error);
+            
+        }
+      }
+      fetchRandomDog();
+</script>
+    
+
 </body>
 </html>
