@@ -13,27 +13,36 @@
       <button id="women-btn" class="btn">Women</button>
       <button id="men-btn" class="btn">Men</button>
       <button id="both-btn" class="btn">Men & Women</button>
-
-</div>
+    </div>
     <script>
       const womenBtn = document.getElementById("women-btn");
       const menBtn = document.getElementById("men-btn");
       const bothBtn = document.getElementById("both-btn");
 
       // fetching, try & catch:
+      let randomUsers; // legge alle random users i denne variabelen senere
       async function fetchRandomUser() {
+        const randomUserRequest = await fetch(
+          "https://randomuser.me/api/?results=10"
+        );
+        let result = await randomUserRequest.json();
+
+        return result;
+      }
+      console.log(fetchRandomUser());
+
+      // hjelpefunksjon som henter inn randomUsers og viser de frem.
+      async function fetchAndShowUsers() {
         try {
-          const response = await fetch("https://randomuser.me/api");
-          const randomUser = await response.json();
-          console.log(randomUser);
-        } catch (error) {
-          console.log(
+          randomUsers = await fetchRandomUser();
+        } catch {
+          console.error(
             "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
             error
           );
         }
       }
-      fetchRandomUser();
+      fetchAndShowUsers();
     </script>
   </body>
 </html>
