@@ -18,13 +18,13 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
     flex-direction:row;
 }
 
 .card-container {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     flex-wrap: wrap;
     gap: 30px;
     margin: 20px; 
@@ -46,4 +46,18 @@ h1 {
     background-color: #dfa81b47; ;
 }
 
+.profile {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
 
+.profile img {
+    max-width: 100px;
+    border-radius: 50%;
+}
+
+profile p {
+    margin-top: 10px;
+}
