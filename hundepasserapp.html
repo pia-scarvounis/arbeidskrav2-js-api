@@ -1,14 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hundepasser-app</title>
-</head>
-<body>
-<script>
-       // fetching, try & catch:
-       async function fetchRandomUser() {
+    <style>
+      .profile-card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+        width: 200px;
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+      }
+      .profile-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <button>Show 10 new cards</button>
+    <div>
+      <select id="breed-filter">
+        <option value="">Select breed</option>
+        <option value="labrador">Labrador</option>
+        <option value="poodle">Poodle</option>
+        <option value="bulldog">Bulldog</option>
+        <option value="husky">Husky</option>
+        <option value="beagle">Beagle</option>
+      </select>
+    </div>
+    <div id="profile-cards"></div>
+
+    <script>
+      // fetching, try & catch:
+      async function fetchRandomUser() {
         try {
           const response = await fetch("https://randomuser.me/api");
           const randomUser = await response.json();
@@ -22,19 +53,40 @@
       }
       fetchRandomUser();
 
+      const profileCardsContainer = document.getElementById('profile-cards');
+
       async function fetchRandomDog() {
         try {
-            const response = await fetch("https://dog.ceo/api/breeds/list/all");
-            const randomDog = await response.json();
-            console.log(randomDog);
+          const response = await fetch(
+            'https://dog.ceo/api/breeds/image/random'
+          );
+          const data = await response.json();
+
+          return data.message;
         } catch (error) {
             console.log("Error, noe er feil. Kom tilbake senere", error);
-            
+
         }
       }
-      fetchRandomDog();
-</script>
-    
 
-</body>
+      async function generateProfileCards() {
+        profileCardsContainer.innerHTML = '';
+        const times = 10;
+
+        for (let i = 0; i < times; i++) {
+          const dogImage = await fetchRandomDog();
+          const card = document.createElement('div');
+          card.classList.add('profile-card');
+          card.innerHTML = `
+            <img src="${dogImage}" alt="Dog">
+            <button>Delete</button>
+            <button>Chat</button>
+          `;
+          profileCardsContainer.appendChild(card);
+        }
+      }
+
+      generateProfileCards();
+    </script>
+  </body>
 </html>
