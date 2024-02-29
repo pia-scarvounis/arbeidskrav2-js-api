@@ -10,9 +10,9 @@
     <h1>Velkommen til din datingapp</h1>
     <!--- knapper til dating-siden -->
     <div class="content-container">
-    <button id="women-btn" class="btn">Women</button>
-    <button id="men-btn" class="btn">Men</button>
-    <button id="both-btn" class="btn">Men & Women</button>
+      <button id="women-btn" class="btn">Women</button>
+      <button id="men-btn" class="btn">Men</button>
+      <button id="both-btn" class="btn">Men & Women</button>
     </div>
 
     <!-- container & counter -->
@@ -35,18 +35,19 @@
       let randomUsers; // legge alle random users i denne variabelen senere
       async function fetchRandomUser() {
         const randomUserRequest = await fetch(
-          "https://randomuser.me/api/?results=30"
+          `https://randomuser.me/api/?results=30&gender=`
         );
+
         let result = await randomUserRequest.json();
 
         return result;
       }
-      console.log("inne i fetchandomUser", fetchRandomUser());
+      console.log("inne i fetchRandomUser", fetchRandomUser());
 
       // hjelpefunksjon som henter inn randomUsers og viser de frem.
-      async function fetchAndShowUsers() {
+      function fetchAndShowUsers() {
         try {
-          randomUsers = await fetchRandomUser();
+          randomUsers = fetchRandomUser();
         } catch {
           console.error(
             "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
@@ -55,8 +56,35 @@
         }
       }
       fetchAndShowUsers();
+      console.log("test kjøring fetchAndShowUses:", randomUsers);
 
-   
+      // Vise random brukere:
+      function displayUsers(users) {
+        profileContainer.innerHTML = "";
+        users.forEach((user) => {
+          const profileDiv = document.createElement("div");
+          profileDiv.className = "profile";
+
+          const image = document.createElement("img");
+          image.src = user.picture.large;
+          image.alt = "Profile Picture";
+          profileDiv.appendChild(image);
+
+          const name = document.createElement("p");
+          name.textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
+          profileDiv.appendChild(name);
+
+          profileContainer.appendChild(profileDiv);
+        });
+      }
+
+      async function fetchAndShowUsers() {
+        const randomUserResult = await fetchRandomUser();
+        if (randomUserResult && randomUserResult.results) {
+          displayUsers(randomUserResult.results);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", fetchAndShowUsers);
     </script>
   </body>
 </html>
