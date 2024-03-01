@@ -56,9 +56,6 @@
         }
       }
       fetchAndShowUsers();
-      console.log("test kjøring fetchAndShowUses:", randomUsers);
-
-      // funksjoner:
 
       // Vise random brukere:
       function displayUsers(users) {
@@ -66,6 +63,13 @@
         users.forEach((user) => {
           const profileDiv = document.createElement("div");
           profileDiv.className = "profile";
+
+          // bakgrunnsfarge ulike kjønn:
+          if (user.gender === "female") {
+            profileDiv.style.backgroundColor = "#FFDAB9";
+          } else if (user.gender === "male") {
+            profileDiv.style.backgroundColor = "#AACE9C";
+          }
 
           // ranodmUsers profilbilde:
           const image = document.createElement("img");
@@ -78,7 +82,7 @@
           profileDiv.appendChild(name);
           // randomUsers location:
           const city = document.createElement("p");
-          city.textContent = `Location: ${user.location.city}`;
+          city.textContent = `Location: ${user.location.city}, ${user.location.country}`;
           profileDiv.appendChild(city);
 
           profileContainer.appendChild(profileDiv);
