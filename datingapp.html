@@ -32,32 +32,28 @@
       let swipeCounter = 10;
 
       // fetching, try & catch:
-      let randomUsers; // legge alle random users i denne variabelen senere
-      async function fetchRandomUser() {
-        const randomUserRequest = await fetch(
-          `https://randomuser.me/api/?results=30&gender=`
-        );
-
-        let result = await randomUserRequest.json();
-
-        return result;
+      let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
+      async function fetchRandomUser(gender = "") {
+        const url = `https://randomuser.me/api/?results=30&gender=${gender}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.results;
       }
-      console.log("inne i fetchRandomUser", fetchRandomUser());
 
       // hjelpefunksjon som henter inn randomUsers og viser de frem.
-      function fetchAndShowUsers() {
+      async function fetchAndShowUsers(gender = "") {
         try {
-          randomUsers = fetchRandomUser();
-        } catch {
+          const users = await fetchRandomUser(gender);
+          displayUsers(users);
+        } catch (error) {
           console.error(
             "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
             error
           );
         }
       }
-      fetchAndShowUsers();
 
-      // Vise random brukere:
+      // Vise random profiler:
       function displayUsers(users) {
         profileContainer.innerHTML = "";
         users.forEach((user) => {
@@ -71,16 +67,16 @@
             profileDiv.style.backgroundColor = "#AACE9C";
           }
 
-          // ranodmUsers profilbilde:
+          // users profilbilde:
           const image = document.createElement("img");
           image.src = user.picture.large;
           image.alt = "Profile Picture";
           profileDiv.appendChild(image);
-          // randomUsers navn:
+          // users navn:
           const name = document.createElement("p");
           name.textContent = `Name: ${user.name.first} ${user.name.last}`;
           profileDiv.appendChild(name);
-          // randomUsers location:
+          // users location:
           const city = document.createElement("p");
           city.textContent = `Location: ${user.location.city}, ${user.location.country}`;
           profileDiv.appendChild(city);
@@ -88,14 +84,17 @@
           profileContainer.appendChild(profileDiv);
         });
       }
+      // knapper funksjon og addEventListener:
+      womenBtn.addEventListener("click", function () {
+        fetchAndShowUsers("female");
+      });
 
-      async function fetchAndShowUsers() {
-        const randomUserResult = await fetchRandomUser();
-        if (randomUserResult && randomUserResult.results) {
-          displayUsers(randomUserResult.results);
-        }
-      }
-      document.addEventListener("DOMContentLoaded", fetchAndShowUsers); // Dette har chatGPT fortalt meg. finn ut av det og endre det til addEventListener på knappene
+      menBtn.addEventListener("click", function () {
+        fetchAndShowUsers("male");
+      });
+      bothBtn.addEventListener("click", function () {
+        fetchAndShowUsers();
+      });
     </script>
   </body>
 </html>
