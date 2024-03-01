@@ -56,7 +56,9 @@
       // Vise random profiler:
       function displayUsers(users) {
         profileContainer.innerHTML = "";
-        users.forEach((user) => {
+        if (users.length > 0) {
+          const randomIndex = Math.floor(Math.random() * users.length);
+          const user = users[randomIndex];
           const profileDiv = document.createElement("div");
           profileDiv.className = "profile";
 
@@ -66,7 +68,7 @@
           } else if (user.gender === "male") {
             profileDiv.style.backgroundColor = "#AACE9C";
           }
-
+        
           // users profilbilde:
           const image = document.createElement("img");
           image.src = user.picture.large;
@@ -82,8 +84,9 @@
           profileDiv.appendChild(city);
 
           profileContainer.appendChild(profileDiv);
-        });
+        }
       }
+        
       // knapper funksjon og addEventListener:
       womenBtn.addEventListener("click", function () {
         fetchAndShowUsers("female");
