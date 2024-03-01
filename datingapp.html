@@ -58,6 +58,8 @@
       fetchAndShowUsers();
       console.log("test kjøring fetchAndShowUses:", randomUsers);
 
+      // funksjoner:
+
       // Vise random brukere:
       function displayUsers(users) {
         profileContainer.innerHTML = "";
@@ -65,14 +67,19 @@
           const profileDiv = document.createElement("div");
           profileDiv.className = "profile";
 
+          // ranodmUsers profilbilde:
           const image = document.createElement("img");
           image.src = user.picture.large;
           image.alt = "Profile Picture";
           profileDiv.appendChild(image);
-
+          // randomUsers navn:
           const name = document.createElement("p");
-          name.textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
+          name.textContent = `Name: ${user.name.first} ${user.name.last}`;
           profileDiv.appendChild(name);
+          // randomUsers location:
+          const city = document.createElement("p");
+          city.textContent = `Location: ${user.location.city}`;
+          profileDiv.appendChild(city);
 
           profileContainer.appendChild(profileDiv);
         });
@@ -84,7 +91,7 @@
           displayUsers(randomUserResult.results);
         }
       }
-      document.addEventListener("DOMContentLoaded", fetchAndShowUsers);
+      document.addEventListener("DOMContentLoaded", fetchAndShowUsers); // Dette har chatGPT fortalt meg. finn ut av det og endre det til addEventListener på knappene
     </script>
   </body>
 </html>
