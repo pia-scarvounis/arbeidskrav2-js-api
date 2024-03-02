@@ -9,8 +9,11 @@
   <body>
     <h1>Velkommen til din datingapp</h1>
     <!-- container & counter -->
-    <div id="profile-container">Min profil</div>
-    <div id="swipe-score-container">Min Swipescore: 10</div>
+    <div id="personal-profile-container">
+      <h2 id="profile-container">Min profil</h2>
+      <div id="swipe-score-container">Swipescore: 10</div>
+      <div id="liked-profiles-container">Profiler likt:</div>
+    </div>
 
     <!--- knapper til dating-siden -->
     <div class="content-container">
@@ -29,8 +32,13 @@
       let swipeScoreContainer = document.getElementById(
         "swipe-score-container"
       );
+      const likedProfilesContainer = document.getElementById(
+        "liked-profiles-container"
+      );
       let swipeCounter = 10;
       let currentGender = "";
+      let currentDisplayedUser = null // null sa chatGPT at jeg skulle legge til
+  
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
@@ -60,6 +68,7 @@
         if (users.length > 0) {
           const randomIndex = Math.floor(Math.random() * users.length);
           const user = users[randomIndex];
+          currentDisplayedUser = user;
           const profileDiv = document.createElement("div");
           profileDiv.className = "profile";
 
@@ -90,12 +99,12 @@
 
       // knapper funksjon og addEventListener:
       womenBtn.addEventListener("click", function () {
-currentGender = "female";
+        currentGender = "female";
         fetchAndShowUsers(currentGender);
       });
 
       menBtn.addEventListener("click", function () {
-currentGender = "male";
+        currentGender = "male";
         fetchAndShowUsers(currentGender);
       });
       bothBtn.addEventListener("click", function () {
@@ -110,11 +119,31 @@ currentGender = "male";
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
         } else if (event.key == "ArrowRight") {
+          if (currentDisplayedUser) {
+            likedProfiles.push(currentDisplayedUser);
+            updateLikedProfilesDisplay();
+          }
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
         }
       });
+
+      // filtrere ut likte profiler og adde de på siden
+      const likedProfiles = [];
+
+      function updateLikedProfilesDisplay() {
+        likedProfilesContainer.innerHTML = "Profiler likt:";
+        likedProfiles.forEach(user =>  {
+          const img = document.createElement("img");
+          img.src = user.picture.large;
+          img.style.width = "50px";
+          img.style.height = "50px";
+          img.style.margin = "5px";
+
+          likedProfilesContainer.appendChild(img);
+        })
+      };
     </script>
   </body>
 </html>
