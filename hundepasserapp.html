@@ -24,7 +24,7 @@
     </style>
   </head>
   <body>
-    <button>Show 10 new cards</button>
+    <button onclick="showNewCards()">Show 10 new cards</button>
     <div>
       <select id="breed-filter">
         <option value="">Select breed</option>
@@ -108,6 +108,11 @@
           profileCardsContainer.appendChild(card);
         });
       }
+
+      async function showNewCards() {
+        await generateProfileCards();
+      }
+
       generateProfileCards();
     </script>
   </body>
