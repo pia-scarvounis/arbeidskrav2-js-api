@@ -30,6 +30,7 @@
         "swipe-score-container"
       );
       let swipeCounter = 10;
+      let currentGender = "";
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
@@ -89,14 +90,17 @@
 
       // knapper funksjon og addEventListener:
       womenBtn.addEventListener("click", function () {
-        fetchAndShowUsers("female");
+currentGender = "female";
+        fetchAndShowUsers(currentGender);
       });
 
       menBtn.addEventListener("click", function () {
-        fetchAndShowUsers("male");
+currentGender = "male";
+        fetchAndShowUsers(currentGender);
       });
       bothBtn.addEventListener("click", function () {
-        fetchAndShowUsers();
+        currentGender = "";
+        fetchAndShowUsers(currentGender);
       });
 
       // piltaster
@@ -104,7 +108,11 @@
         if (event.key == "ArrowLeft") {
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
-          await fetchAndShowUsers();
+          await fetchAndShowUsers(currentGender);
+        } else if (event.key == "ArrowRight") {
+          swipeCounter--;
+          swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
+          await fetchAndShowUsers(currentGender);
         }
       });
     </script>
