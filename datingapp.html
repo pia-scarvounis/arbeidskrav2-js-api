@@ -8,16 +8,16 @@
   </head>
   <body>
     <h1>Velkommen til din datingapp</h1>
+    <!-- container & counter -->
+    <div id="profile-container">Min profil</div>
+    <div id="swipe-score-container">Min Swipescore: 10</div>
+
     <!--- knapper til dating-siden -->
     <div class="content-container">
       <button id="women-btn" class="btn">Women</button>
       <button id="men-btn" class="btn">Men</button>
       <button id="both-btn" class="btn">Men & Women</button>
     </div>
-
-    <!-- container & counter -->
-    <div id="profile-container"></div>
-    <div id="swipe-score-container"></div>
 
     <script>
       // knapper, containers & counters js:
@@ -68,7 +68,7 @@
           } else if (user.gender === "male") {
             profileDiv.style.backgroundColor = "#AACE9C";
           }
-        
+
           // users profilbilde:
           const image = document.createElement("img");
           image.src = user.picture.large;
@@ -86,7 +86,7 @@
           profileContainer.appendChild(profileDiv);
         }
       }
-        
+
       // knapper funksjon og addEventListener:
       womenBtn.addEventListener("click", function () {
         fetchAndShowUsers("female");
@@ -97,6 +97,15 @@
       });
       bothBtn.addEventListener("click", function () {
         fetchAndShowUsers();
+      });
+
+      // piltaster
+      document.addEventListener("keydown", async function (event) {
+        if (event.key == "ArrowLeft") {
+          swipeCounter--;
+          swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
+          await fetchAndShowUsers();
+        }
       });
     </script>
   </body>
