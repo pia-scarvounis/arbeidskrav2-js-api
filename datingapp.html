@@ -37,8 +37,7 @@
       );
       let swipeCounter = 10;
       let currentGender = "";
-      let currentDisplayedUser = null // null sa chatGPT at jeg skulle legge til
-  
+      let currentDisplayedUser = null; // null sa chatGPT at jeg skulle legge til
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
@@ -112,13 +111,36 @@
         fetchAndShowUsers(currentGender);
       });
 
+      // vise melding for reset swipes
+      function showMessageReset() {
+        let confirmation = confirm("Har du lyst til å swipe mer?");
+        if (!confirmation) showMessageReset();
+      }
+
+      function verifySwiperCountDone() {
+        if (swipeCounter <= 0) {
+          showMessageReset();
+          swipeCounter = 10;
+          swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
+        }
+      }
+
       // piltaster
       document.addEventListener("keydown", async function (event) {
         if (event.key == "ArrowLeft") {
+          if (swipeCounter <= 0) return;
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
+          verifySwiperCountDone();
         } else if (event.key == "ArrowRight") {
+          if (swipeCounter <= 0) return;
+          if (likedProfiles.length >= 10) {
+            alert(
+              " Du får ikke lov til å swipe mer før du har slettet minst en bruker fra listen ved å trykke på slette-knappen."
+            );
+            return;
+          }
           if (currentDisplayedUser) {
             likedProfiles.push(currentDisplayedUser);
             updateLikedProfilesDisplay();
@@ -126,24 +148,37 @@
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
+          verifySwiperCountDone();
         }
       });
 
       // filtrere ut likte profiler og adde de på siden
       const likedProfiles = [];
 
+      function deleteLikedProfile(indexLikedProfile) {
+        likedProfiles.splice(indexLikedProfile, 1);
+        updateLikedProfilesDisplay(); // update
+      }
+
       function updateLikedProfilesDisplay() {
         likedProfilesContainer.innerHTML = "Profiler likt:";
-        likedProfiles.forEach(user =>  {
+        likedProfiles.forEach((user) => {
           const img = document.createElement("img");
+          img.onclick = () => {
+            let deleteResponse = confirm("Ønsker du å sletta denne profilen?");
+            if (deleteResponse) {
+              let index = likedProfiles.indexOf(user);
+              deleteLikedProfile(index);
+            }
+          };
           img.src = user.picture.large;
           img.style.width = "50px";
           img.style.height = "50px";
           img.style.margin = "5px";
 
           likedProfilesContainer.appendChild(img);
-        })
-      };
+        });
+      }
     </script>
   </body>
 </html>
