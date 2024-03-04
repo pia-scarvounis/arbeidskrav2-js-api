@@ -8,6 +8,10 @@
   </head>
   <body>
     <h1>Velkommen til din datingapp</h1>
+    <div class="emoji-intro">
+      <p>&#x1F60D;<i> høyre piltast</i></p>
+      <p>&#128564;<i> venstre piltast</i></p>
+    </div>
     <!-- container & counter -->
     <div id="personal-profile-container">
       <h2 id="profile-container">Min profil</h2>
@@ -20,184 +24,188 @@
       <div id="swipe-score-container">Swipescore: 10</div>
       <div id="liked-profiles-container">Profiler likt:</div>
     </div>
-    <div id="profile-modal" class="modal">
-    </div>
+    <div id="profile-modal" class="modal"></div>
 
     <script>
       // knapper, containers & counters js:
-      const womenBtn = document.getElementById('women-btn');
-      const menBtn = document.getElementById('men-btn');
-      const bothBtn = document.getElementById('both-btn');
+      const womenBtn = document.getElementById("women-btn");
+      const menBtn = document.getElementById("men-btn");
+      const bothBtn = document.getElementById("both-btn");
 
-      const profileContainer = document.getElementById('profile-container');
+      const profileContainer = document.getElementById("profile-container");
       let swipeScoreContainer = document.getElementById(
-          'swipe-score-container'
+        "swipe-score-container"
       );
       const likedProfilesContainer = document.getElementById(
-          'liked-profiles-container'
+        "liked-profiles-container"
       );
       let swipeCounter = 10;
-      let currentGender = '';
+      let currentGender = "";
       let currentDisplayedUser = null; // null sa chatGPT at jeg skulle legge til
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
-      async function fetchRandomUser(gender = '') {
-          const url = `https://randomuser.me/api/?results=30&gender=${gender}`;
-          const response = await fetch(url);
-          const data = await response.json();
-          return data.results;
+      async function fetchRandomUser(gender = "") {
+        const url = `https://randomuser.me/api/?results=30&gender=${gender}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.results;
       }
 
       // hjelpefunksjon som henter inn randomUsers og viser de frem.
-      async function fetchAndShowUsers(gender = '') {
-          try {
+      async function fetchAndShowUsers(gender = "") {
+        try {
           const users = await fetchRandomUser(gender);
           displayUsers(users);
-          } catch (error) {
+        } catch (error) {
           console.error(
-              'Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.',
-              error
+            "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
+            error
           );
-          }
+        }
       }
 
       // Vise random profiler:
       function displayUsers(users) {
-          profileContainer.innerHTML = '';
-          if (users.length > 0) {
+        profileContainer.innerHTML = "";
+        if (users.length > 0) {
           const randomIndex = Math.floor(Math.random() * users.length);
           const user = users[randomIndex];
           currentDisplayedUser = user;
-          const profileDiv = document.createElement('div');
-          profileDiv.className = 'profile';
+          const profileDiv = document.createElement("div");
+          profileDiv.className = "profile";
 
           // bakgrunnsfarge ulike kjønn:
-          if (user.gender === 'female') {
-              profileDiv.style.backgroundColor = '#FFDAB9';
-          } else if (user.gender === 'male') {
-              profileDiv.style.backgroundColor = '#AACE9C';
+          if (user.gender === "female") {
+            profileDiv.style.backgroundColor = "#FFDAB9";
+          } else if (user.gender === "male") {
+            profileDiv.style.backgroundColor = "#AACE9C";
           }
 
           // users profilbilde:
-          const image = document.createElement('img');
+          const image = document.createElement("img");
           image.src = user.picture.large;
-          image.alt = 'Profile Picture';
+          image.alt = "Profile Picture";
           profileDiv.appendChild(image);
           // users navn:
-          const name = document.createElement('p');
+          const name = document.createElement("p");
           name.textContent = `Name: ${user.name.first} ${user.name.last}`;
           profileDiv.appendChild(name);
           // users location:
-          const city = document.createElement('p');
+          const city = document.createElement("p");
           city.textContent = `Location: ${user.location.city}, ${user.location.country}`;
           profileDiv.appendChild(city);
 
           profileContainer.appendChild(profileDiv);
-          }
+        }
       }
 
       // knapper funksjon og addEventListener:
-      womenBtn.addEventListener('click', function () {
-          currentGender = 'female';
-          fetchAndShowUsers(currentGender);
+      womenBtn.addEventListener("click", function () {
+        currentGender = "female";
+        fetchAndShowUsers(currentGender);
       });
 
-      menBtn.addEventListener('click', function () {
-          currentGender = 'male';
-          fetchAndShowUsers(currentGender);
+      menBtn.addEventListener("click", function () {
+        currentGender = "male";
+        fetchAndShowUsers(currentGender);
       });
-      bothBtn.addEventListener('click', function () {
-          currentGender = '';
-          fetchAndShowUsers(currentGender);
+      bothBtn.addEventListener("click", function () {
+        currentGender = "";
+        fetchAndShowUsers(currentGender);
       });
 
       // vise melding for reset swipes
       function showMessageReset() {
-          let confirmation = confirm('Har du lyst til å swipe mer?');
-          if (!confirmation) showMessageReset();
+        let confirmation = confirm("Har du lyst til å swipe mer?");
+        if (!confirmation) showMessageReset();
       }
 
       function verifySwiperCountDone() {
-          if (swipeCounter <= 0) {
+        if (swipeCounter <= 0) {
           showMessageReset();
           swipeCounter = 10;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
-          }
+        }
       }
 
       // piltaster
-      document.addEventListener('keydown', async function (event) {
-          if (event.key == 'ArrowLeft') {
+      document.addEventListener("keydown", async function (event) {
+        if (event.key == "ArrowLeft") {
           if (swipeCounter <= 0) return;
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
           verifySwiperCountDone();
-          } else if (event.key == 'ArrowRight') {
+        } else if (event.key == "ArrowRight") {
           if (swipeCounter <= 0) return;
           if (likedProfiles.length >= 10) {
-              alert(
-              ' Du får ikke lov til å swipe mer før du har slettet minst en bruker fra listen ved å trykke på slette-knappen.'
-              );
-              return;
+            alert(
+              " Du får ikke lov til å swipe mer før du har slettet minst en bruker fra listen ved å trykke på slette-knappen."
+            );
+            return;
           }
           if (currentDisplayedUser) {
-              likedProfiles.push(currentDisplayedUser);
-              updateLikedProfilesDisplay();
+            likedProfiles.push(currentDisplayedUser);
+            updateLikedProfilesDisplay();
           }
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
           await fetchAndShowUsers(currentGender);
           verifySwiperCountDone();
-          }
+        }
       });
 
       // filtrere ut likte profiler og adde de på siden
       const likedProfiles = [];
 
       function deleteLikedProfile(indexLikedProfile) {
-          likedProfiles.splice(indexLikedProfile, 1);
-          updateLikedProfilesDisplay(); // update
+        likedProfiles.splice(indexLikedProfile, 1);
+        updateLikedProfilesDisplay(); // update
       }
 
       function updateLikedProfilesDisplay() {
-          likedProfilesContainer.innerHTML = 'Profiler likt:';
-          likedProfilesContainer.classList.add('liked-profile-container');
+        likedProfilesContainer.innerHTML = "Profiler likt:";
+        likedProfilesContainer.classList.add("liked-profile-container");
+        likedProfiles.forEach((user) => {
+          const img = document.createElement("img");
+          const div = document.createElement("div");
+          const actions = document.createElement("div");
+          const deleteButton = document.createElement("button");
+          const editButton = document.createElement("button");
+          deleteButton.innerHTML = "Delete";
+          editButton.innerHTML = "Edit";
 
-          likedProfiles.forEach((user) => {
-          const img = document.createElement('img');
-          const div = document.createElement('div');
-          const actions = document.createElement('div');
-          const deleteButton = document.createElement('button');
-          const editButton = document.createElement('button');
-          deleteButton.innerHTML = 'Delete';
-          editButton.innerHTML = 'Edit';
+          if (user.gender === "female") {
+            div.style.backgroundColor = "#FFDAB9";
+          } else if (user.gender === "male") {
+            div.style.backgroundColor = "#AACE9C";
+          }
 
-          div.classList.add('profile');
-          div.classList.add('liked-profile');
-          actions.classList.add('profile-buttons');
-          editButton.classList.add('profile-edit-btn');
+          div.classList.add("profile");
+          div.classList.add("liked-profile");
+          actions.classList.add("profile-buttons");
+          editButton.classList.add("profile-edit-btn");
 
-          editButton.id = user.id.value
+          editButton.id = user.id.value;
           deleteButton.onclick = () => {
-              let deleteResponse = confirm('Ønsker du å sletta denne profilen?');
-              if (deleteResponse) {
+            let deleteResponse = confirm("Ønsker du å sletta denne profilen?");
+            if (deleteResponse) {
               let index = likedProfiles.indexOf(user);
               deleteLikedProfile(index);
-              }
+            }
           };
           editButton.onclick = () => {
-              openModal(user.id.value)
+            openModal(user.id.value);
           };
           img.src = user.picture.large;
-          const name = document.createElement('p');
-          const age = document.createElement('p');
+          const name = document.createElement("p");
+          const age = document.createElement("p");
           name.textContent = `Name: ${user.name.first} ${user.name.last}`;
           age.textContent = `Age: ${user.dob.age}`;
 
           // users location:
-          const city = document.createElement('p');
+          const city = document.createElement("p");
           city.textContent = `Location: ${user.location.city}, ${user.location.country}`;
           div.appendChild(img);
           div.appendChild(name);
@@ -208,19 +216,21 @@
           div.appendChild(actions);
 
           likedProfilesContainer.appendChild(div);
-          });
+        });
       }
 
       function openModal(userId) {
-        const index = likedProfiles.findIndex(user => user.id.value == userId)
-        let user = likedProfiles[index]
-        const modal = document.getElementById('profile-modal');
+        const index = likedProfiles.findIndex(
+          (user) => user.id.value == userId
+        );
+        let user = likedProfiles[index];
+        const modal = document.getElementById("profile-modal");
 
-        modal.innerHTML = ''
+        modal.innerHTML = "";
 
         modal.style.display = "block";
-        const div = document.createElement('div');
-        div.classList.add('modal-content')
+        const div = document.createElement("div");
+        div.classList.add("modal-content");
 
         div.innerHTML = `
           <div id="profileCard">
@@ -250,36 +260,38 @@
               <button onclick="saveProfile('${userId}')">Save</button>
               <button onclick="closeModal()">Cancel</button>
             </div>
-        </div>`
+        </div>`;
         modal.appendChild(div);
       }
 
-      const modal = document.getElementById('profile-modal');
+      const modal = document.getElementById("profile-modal");
 
       function closeModal() {
         modal.style.display = "none";
       }
 
       function saveProfile(userId) {
-        const index = likedProfiles.findIndex(user => user.id.value == userId)
-        let user = likedProfiles[index]
+        const index = likedProfiles.findIndex(
+          (user) => user.id.value == userId
+        );
+        let user = likedProfiles[index];
 
-        user.name.first = document.getElementById('profile-first-name').value
-        user.name.last = document.getElementById('profile-last-name').value
-        user.dob.age = document.getElementById('profile-age').value
-        user.location.city = document.getElementById('city').value
-        user.location.country = document.getElementById('country').value
-        likedProfiles[index] = user
+        user.name.first = document.getElementById("profile-first-name").value;
+        user.name.last = document.getElementById("profile-last-name").value;
+        user.dob.age = document.getElementById("profile-age").value;
+        user.location.city = document.getElementById("city").value;
+        user.location.country = document.getElementById("country").value;
+        likedProfiles[index] = user;
 
         closeModal();
         updateLikedProfilesDisplay();
       }
 
-      window.onclick = function(event) {
+      window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";
         }
-      }
+      };
     </script>
   </body>
 </html>
