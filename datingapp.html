@@ -41,7 +41,7 @@
       );
       let swipeCounter = 10;
       let currentGender = "";
-      let currentDisplayedUser = null; // null sa chatGPT at jeg skulle legge til
+      let currentDisplayedUser = null; // chat-gpt hjalp til med denne linjen
 
       // fetching, try & catch:
       let randomUsers; // legge alle random users i denne variabelen senere. trenger jeg denne nå? finn ut av det
@@ -148,6 +148,7 @@
           if (currentDisplayedUser) {
             likedProfiles.push(currentDisplayedUser);
             updateLikedProfilesDisplay();
+            localStorage.setItem('likedProfiles', JSON.stringify(likedProfiles)); // ser ingenting i application, finne ut om dette funker
           }
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
@@ -162,7 +163,16 @@
       function deleteLikedProfile(indexLikedProfile) {
         likedProfiles.splice(indexLikedProfile, 1);
         updateLikedProfilesDisplay(); // update
+        localStorage.setItem('likedProfiles', JSON.stringify(likedProfiles));
       }
+
+      document.addEventListener('DOMContentLoaded', (event) => {
+        const storedProfiles = localStorage.getItem('likedProfiles');
+        if (storedProfiles) {
+            likedProfiles.push(...JSON.parse(storedProfiles)); // denne biten har chat-gpt hjulpet meg med. får fortsatt ikke noe opp i application
+            updateLikedProfilesDisplay();
+        }
+    });
 
       function updateLikedProfilesDisplay() {
         likedProfilesContainer.innerHTML = "Profiler likt:";
