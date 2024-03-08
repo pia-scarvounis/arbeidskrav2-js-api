@@ -148,7 +148,7 @@
           if (currentDisplayedUser) {
             likedProfiles.push(currentDisplayedUser);
             updateLikedProfilesDisplay();
-            localStorage.setItem('likedProfiles', JSON.stringify(likedProfiles)); // ser ingenting i application, finne ut om dette funker
+            localStorage.setItem('likedProfiles', JSON.stringify(likedProfiles)); 
           }
           swipeCounter--;
           swipeScoreContainer.innerHTML = `Min swipescore: ${swipeCounter}`;
@@ -169,7 +169,7 @@
       document.addEventListener('DOMContentLoaded', (event) => {
         const storedProfiles = localStorage.getItem('likedProfiles');
         if (storedProfiles) {
-            likedProfiles.push(...JSON.parse(storedProfiles)); // denne biten har chat-gpt hjulpet meg med. får fortsatt ikke noe opp i application
+            likedProfiles.push(...JSON.parse(storedProfiles)); // denne biten har chat-gpt hjulpet meg med. 
             updateLikedProfilesDisplay();
         }
     });
