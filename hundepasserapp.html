@@ -74,14 +74,14 @@
       const chats = {};
 
       function updateChats() {
-        // får chaten til åå vises eller forsvinne hvis det ikke er noe chat åpen
+        // får chaten til å vises eller forsvinne hvis det ikke er noe chat åpen
         if (Object.keys(chats).length > 0) {
           document.getElementById("chats").style.display = "block";
         } else {
           document.getElementById("chats").style.display = "none";
         }
 
-        // den starte div til chaten
+        // den starte div til chaten og samle den ved høyre siden
         let chatDiv = document.getElementById("chats");
         chatDiv.innerHTML = "";
         // para cada chat, cria um card
@@ -97,12 +97,12 @@
             let text = message.text;
 
             if (from === "system") {
-              // hvis melding er fra systemet blir det laget en h3
+              // hvis melding er fra systemet blir det laget en h3 - Chat with "Name"
               let h3 = document.createElement("h3");
               h3.innerHTML = message.text;
               chat.appendChild(h3);
             } else if (message.from === "user") {
-              // hvis meldingen er fra brukeren blir det laget en div
+              // hvis meldingen er fra brukeren blir det laget en div - meldingen som blir sendt
               let div = document.createElement("div");
               div.classList.add("user-message");
               let messageP = document.createElement("p");
@@ -119,7 +119,7 @@
               div.appendChild(deleteMessage);
               chat.appendChild(div);
             } else {
-              // hvis meldingen er fra eieren får man opp en p
+              // hvis meldingen er fra eieren får man opp en p-tagg 
               let messageP = document.createElement("p");
               messageP.classList.add("message");
               messageP.innerHTML = message.text;
@@ -127,7 +127,7 @@
             }
           }
 
-          // en input blir laget av meldingen
+          // en input blir laget av meldingen - text box for å skrive meldingen
           let input = document.createElement("input");
           input.style.marginBottom = "10px";
           input.type = "text";
