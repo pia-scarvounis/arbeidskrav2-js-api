@@ -15,11 +15,41 @@
         vertical-align: top;
         position: relative;
       }
+
       .profile-card img {
         width: 100%;
         height: auto;
         border-radius: 5px;
         margin-bottom: 5px;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+
+      #chats {
+        width: 350px;
+        margin-left: 5px;
+      }
+      .user-message {
+        text-align: right;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .user-message > button {
+        margin-left: 10px;
+        height: 20px;
+      }
+
+      .chat-card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
       }
     </style>
   </head>
@@ -35,9 +65,118 @@
         <option value="beagle">Beagle</option>
       </select>
     </div>
-    <div id="profile-cards"></div>
+    <div class="row">
+      <div id="profile-cards"></div>
+      <div id="chats" style="display: none"></div>
+    </div>
 
     <script>
+      const chats = {};
+
+      function updateChats() {
+        // får chaten til åå vises eller forsvinne hvis det ikke er noe chat åpen
+        if (Object.keys(chats).length > 0) {
+          document.getElementById("chats").style.display = "block";
+        } else {
+          document.getElementById("chats").style.display = "none";
+        }
+
+        // den starte div til chaten
+        let chatDiv = document.getElementById("chats");
+        chatDiv.innerHTML = "";
+        // para cada chat, cria um card
+        for (let key in chats) {
+          let chat = document.createElement("div");
+          chat.classList.add("chat-card");
+          let chatMessages = chats[key];
+
+          // en element blir created for hver melding          
+          for (let i = 0; i < chatMessages.length; i++) {
+            let message = chatMessages[i];
+            let from = message.from;
+            let text = message.text;
+
+            if (from === "system") {
+              // hvis melding er fra systemet blir det laget en h3
+              let h3 = document.createElement("h3");
+              h3.innerHTML = message.text;
+              chat.appendChild(h3);
+            } else if (message.from === "user") {
+              // hvis meldingen er fra brukeren blir det laget en div
+              let div = document.createElement("div");
+              div.classList.add("user-message");
+              let messageP = document.createElement("p");
+              messageP.innerHTML = message.text;
+              div.appendChild(messageP);
+
+              let deleteMessage = document.createElement("button");
+              deleteMessage.innerHTML = "Delete";
+              deleteMessage.onclick = function () {
+                // slette melding fra brukeren 
+                chats[key].splice(i, 1);
+                updateChats();
+              };
+              div.appendChild(deleteMessage);
+              chat.appendChild(div);
+            } else {
+              // hvis meldingen er fra eieren får man opp en p
+              let messageP = document.createElement("p");
+              messageP.classList.add("message");
+              messageP.innerHTML = message.text;
+              chat.appendChild(messageP);
+            }
+          }
+
+          // en input blir laget av meldingen
+          let input = document.createElement("input");
+          input.style.marginBottom = "10px";
+          input.type = "text";
+          input.placeholder = "Type your message";
+          chat.appendChild(input);
+
+          // en SEND button blir laget
+          let button = document.createElement("button");
+          button.innerHTML = "Send";
+          button.onclick = function () {
+            let message = input.value;
+            chats[key].push({
+              text: message,
+              from: "user",
+            });
+            updateChats();
+          };
+          chat.appendChild(button);
+
+          // en CLOSE button blir laget for å lukke igjen chatten
+          let close = document.createElement("button");
+          close.innerHTML = "Close";
+          close.style.marginLeft = "10px";
+          close.onclick = function () {
+            let cards = document.getElementsByClassName("profile-card");
+            let card;
+            for (let i = 0; i < cards.length; i++) {
+              let name = cards[i].getElementsByTagName("p")[0].innerHTML;
+              if (name.includes(key)) {
+                card = cards[i];
+                break;
+              }
+            }
+            if (card) {
+              let chatButton = card
+                .getElementsByClassName("chat")[0]
+                .getElementsByTagName("button")[0];
+              chatButton.click();
+            } else {
+              delete chats[key];
+            }
+            updateChats();
+          };
+          chat.appendChild(close);
+
+          chatDiv.appendChild(chat);
+        }
+      }
+
       // fetching, try & catch:
       async function fetchRandomUser(results = 10) {
         try {
@@ -48,44 +187,123 @@
           return randomUser.results;
         } catch (error) {
           console.log(
-            'Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.',
+            "Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you.",
             error
           );
         }
       }
 
-      const profileCardsContainer = document.getElementById('profile-cards');
+      const profileCardsContainer = document.getElementById("profile-cards");
 
       async function fetchRandomDog() {
         try {
-          const response = await fetch(
-            'https://dog.ceo/api/breeds/image/random'
-          );
+          let breedValue = document.getElementById("breed-filter").value;
+          let url = "https://dog.ceo/api/breeds/image/random";
+          if (breedValue != "") {
+            url = "https://dog.ceo/api/breed/" + breedValue + "/images/random";
+          }
+          const response = await fetch(url);
           const data = await response.json();
 
           return data.message;
         } catch (error) {
-          console.log('Error, noe er feil. Kom tilbake senere', error);
+          console.log("Error, noe er feil. Kom tilbake senere", error);
         }
+      }
+
+      async function generateCard(user, dogImage) {
+        const card = document.createElement("div");
+        card.classList.add("profile-card");
+        let breedValue = document.getElementById("breed-filter").value;
+        let name = user.name.first + " " + user.name.last;
+
+        let userData = document.createElement("div");
+
+        let image = document.createElement("img");
+        image.src = user.picture.medium;
+        image.alt = "Dog";
+        userData.appendChild(image);
+
+        let nameP = document.createElement("p");
+        nameP.innerHTML = "Name: " + name;
+        userData.appendChild(nameP);
+
+        let locationP = document.createElement("p");
+        locationP.innerHTML =
+          "Location: " + user.location.city + ", " + user.location.country;
+        userData.appendChild(locationP);
+
+        card.appendChild(userData);
+
+        let imageDog = document.createElement("img");
+        imageDog.src = dogImage;
+        imageDog.alt = "Dog";
+        card.appendChild(imageDog);
+
+        let deleteButton = document.createElement("button");
+        deleteButton.classList.add("deleteButton");
+        deleteButton.innerHTML = "Delete";
+        deleteButton.onclick = function () {
+          deleteCard(deleteButton);
+        };
+        if (breedValue == "") {
+          card.appendChild(deleteButton);
+        }
+
+        let chat = document.createElement("div");
+        chat.classList.add("chat");
+        let button = document.createElement("button");
+        button.innerHTML = "Chat";
+
+        let greetines = [
+          "Voff voff",
+          "Grrr!",
+          "Mjau??",
+          "Voff!",
+          "Voff voff voff",
+          "WRAFF!!!",
+        ];
+        function initChat() {
+          button.innerHTML = "Close Chat";
+          let greeting =
+            greetines[Math.floor(Math.random() * greetines.length)];
+
+          chats[name] = [
+            {
+              text: "Chat with " + name,
+              from: "system",
+            },
+            {
+              text: greeting,
+              from: "owner",
+            },
+          ];
+
+          updateChats();
+          button.onclick = closeChat;
+        }
+        function closeChat() {
+          button.innerHTML = "Chat";
+          delete chats[name];
+          updateChats();
+          button.onclick = initChat;
+        }
+        button.onclick = function () {
+          initChat();
+        };
+
+        chat.appendChild(button);
+        card.appendChild(chat);
+
+        profileCardsContainer.appendChild(card);
       }
 
       async function generateProfileCards() {
         const users = await fetchRandomUser();
-        profileCardsContainer.innerHTML = '';
+        profileCardsContainer.innerHTML = "";
         users.forEach(async (user) => {
           const dogImage = await fetchRandomDog();
-          const card = document.createElement('div');
-          card.classList.add('profile-card');
-          card.innerHTML = `
-            </div>
-                <img src="${user.picture.medium}" alt="Dog">
-                <p>Name: ${user.name.first} ${user.name.last}</p>
-                <p>Location: ${user.location.city}, ${user.location.country}</p>
-            </div>
-            <img src="${dogImage}" alt="Dog">
-            <button onclick="deleteCard(this)">Delete</button>
-          `;
-          profileCardsContainer.appendChild(card);
+          generateCard(user, dogImage);
         });
       }
 
@@ -94,18 +312,7 @@
         const users = await fetchRandomUser(1);
         users.forEach(async (user) => {
           const dogImage = await fetchRandomDog();
-          const card = document.createElement('div');
-          card.classList.add('profile-card');
-          card.innerHTML = `
-            </div>
-                <img src="${user.picture.medium}" alt="Dog">
-                <p>Name: ${user.name.first} ${user.name.last}</p>
-                <p>Location: ${user.location.city}, ${user.location.country}</p>
-            </div>
-            <img src="${dogImage}" alt="Dog">
-            <button onclick="deleteCard(this)">Delete</button>
-          `;
-          profileCardsContainer.appendChild(card);
+          generateCard(user, dogImage);
         });
       }
 
